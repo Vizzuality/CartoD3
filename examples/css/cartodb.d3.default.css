@@ -1,0 +1,19 @@
+
+.CartoDB_D3.Barchart div {
+    font: 10px sans-serif;
+    min-height: 5px;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    color: white;
+}
+
+.CartoDB_D3.Bubble circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.CartoDB_D3.Bubble text {
+  font: 6px sans-serif;
+}
