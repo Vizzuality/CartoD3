@@ -9,12 +9,13 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>D3 Visualization API Sample</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-  <script type="text/javascript" src="libs/underscore-1.1.6.js"></script>
-  <script type="text/javascript" src="libs/backbone.js"></script>
-  <script type="text/javascript" src="libs/d3.min.js?v=2.7.4"></script>
-  <script type="text/javascript" src="libs/d3.layout.min.js?v=2.7.4"></script>
-  <script type="text/javascript" src="backbone.cartodb.js"></script>
-  <script type="text/javascript" src="d3.cartodb.js"></script>
+  <script type="text/javascript" src="examples/libs/underscore-1.1.6.js"></script>
+  <script type="text/javascript" src="examples/libs/backbone.js"></script>
+  <script type="text/javascript" src="examples/libs/d3.min.js?v=2.7.4"></script>
+  <script type="text/javascript" src="examples/libs/d3.chart.min.js?v=2.7.4"></script>
+  <script type="text/javascript" src="examples/backbone.cartodb.js"></script>
+  <script type="text/javascript" src="examples/d3.cartodb.js"></script>
+  <link href='examples/css/cartodb.d3.default.css' rel='stylesheet' type='text/css' />
   <style type="text/css">
 	#cartodb_d3 {
 		float: left; width: 800px; height: 600px;
@@ -34,7 +35,7 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	
 	var CartoD3 = Backbone.CartoD3(eq);
 	$(document).ready(function() {
-		var bubble = new CartoD3.BubbleSVG({ container: "cartodb_d3", variable: 'pop_est', label: 'iso_a3', fill: 'gdp_md_est'});
+		var bubble = new CartoD3.BubbleSVG({ el: "cartodb_d3", variable: 'pop_est', label: 'iso_a3', fill: 'gdp_md_est'});
  	});
   </script>
 </head>

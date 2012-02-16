@@ -1,5 +1,5 @@
 
-.CartoDB_D3.Barchart div {
+.CartoDB_D3.BarChart div {
     font: 10px sans-serif;
     min-height: 5px;
     background-color: steelblue;
@@ -7,6 +7,14 @@
     padding: 3px;
     margin: 1px;
     color: white;
+}
+.CartoDB_D3.BarChart rect {
+    stroke: white;
+}
+.CartoDB_D3.BarChart text {
+    font: 10px sans-serif;
+    min-height: 5px;
+    text-align: right;
 }
 
 .CartoDB_D3.Bubble circle {
@@ -17,3 +25,8 @@
 .CartoDB_D3.Bubble text {
   font: 6px sans-serif;
 }
+
+.CartoDB_D3.BoxChart .box { font: 10px sans-serif; }
+.CartoDB_D3.BoxChart .box line, .box rect, .box circle { stroke: #000; stroke-width: 1.5px; fill: #fff; }
+.CartoDB_D3.BoxChart .box .center { stroke-dasharray: 3 3; }
+.CartoDB_D3.BoxChart .box .outlier { stroke: #ccc; fill: none; }
