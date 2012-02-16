@@ -58,6 +58,8 @@ next steps
 
  - allow functions not just column names to be passed as the major parameters of each vis type
 
+ - add option params for chart axes labels and key/legend
+
  - move the data processing step out of each vis type into a data processing function. each D3 chart type requires different models relative to the cartodb model, update the way i'm creating these
 
  - implement a bus for the data fetch step. this will allow the user to supply new queries that will change the chart drawing using the D3 map features
