@@ -1,12 +1,8 @@
-
-.CartoDB_D3.BarChart div {
-    font: 10px sans-serif;
-    min-height: 5px;
-    background-color: steelblue;
-    text-align: right;
-    padding: 3px;
-    margin: 1px;
-    color: white;
+svg {
+    shape-rendering: crispEdges;
+}
+.CartoDB_D3.BarChart line {
+    stroke: #000;
 }
 .CartoDB_D3.BarChart rect {
     stroke: white;

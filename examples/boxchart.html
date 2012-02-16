@@ -11,8 +11,9 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   <script type="text/javascript" src="libs/underscore-1.1.6.js"></script>
   <script type="text/javascript" src="libs/backbone.js"></script>
-  <script type="text/javascript" src="libs/d3.min.js"></script>
   <script type="text/javascript" src="backbone.cartodb.js"></script>
+  <script type="text/javascript" src="libs/d3.js?v=2.7.4"></script>
+  <script type="text/javascript" src="libs/d3.chart.min.js?v=2.7.4"></script>
   <script type="text/javascript" src="d3.cartodb.js"></script>
   <link href='css/cartodb.d3.default.css' rel='stylesheet' type='text/css' />
   <style type="text/css">
@@ -22,23 +23,23 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
   </style>
   <script type="text/javascript">
 	var CartoDB = Backbone.CartoDB({
-        user: 'examples', // you should put your account name here
-        table: 'earthquakes' // you should put your account name here
+        user: 'viz2', // you should put your account name here
+        table: 'brooklyntree' // you should put your account name here
     });
-	var EarthQuakes = CartoDB.CartoDBCollection.extend({
+	var Trees = CartoDB.CartoDBCollection.extend({
 		sql: function() {
-        	return "select month,avg(magnitude) as magnitude from earthquakes group by month order by month asc";
+        	return "SELECT borough,species,ln(sum(diameter)) as diameter FROM brooklyntree group by borough,species ORDER BY borough"
     	}
     });
-	var eq = new EarthQuakes();
+	var trees = new Trees();
 	
-	var CartoD3 = Backbone.CartoD3(eq);
+	var CartoD3 = Backbone.CartoD3(trees);
 	$(document).ready(function() {
-		var barchart = new CartoD3.BarChart({ el: $("#cartodb_d3"), variable: 'magnitude', label: 'month'});
+		var boxplot = new CartoD3.BoxPlot({ el: $("#cartodb_d3"), group: 'borough', sample: 'species', variable: 'diameter', label: 'diameter'});
  	});
   </script>
 </head>
 <body style="font-family: Arial;border: 0 none;">
-<div id="cartodb_d3"></div>
+<div id="cartodb_d3" style="width: 700px; height: 500px"></div>
 </body>
 </html>

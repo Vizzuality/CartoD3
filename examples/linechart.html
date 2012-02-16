@@ -23,18 +23,18 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
   <script type="text/javascript">
 	var CartoDB = Backbone.CartoDB({
         user: 'examples', // you should put your account name here
-        table: 'earthquakes' // you should put your account name here
+        table: 'un_population_projections' // you should put your account name here
     });
 	var EarthQuakes = CartoDB.CartoDBCollection.extend({
 		sql: function() {
-        	return "select month,avg(magnitude) as magnitude from earthquakes group by month order by month asc";
+        	return "SELECT country_or_area,year_n,floor(value) as estimate  FROM un_population_projections where variant = 'Medium variant' AND country_or_area in ('United States of America', 'China', 'Brazil') ORDER BY country_or_area, year_n";
     	}
     });
 	var eq = new EarthQuakes();
 	
 	var CartoD3 = Backbone.CartoD3(eq);
 	$(document).ready(function() {
-		var barchart = new CartoD3.BarChart({ el: $("#cartodb_d3"), variable: 'magnitude', label: 'month'});
+		var barchart = new CartoD3.LineChart({ el: $("#cartodb_d3"), variable: 'magnitude', label: 'month'});
  	});
   </script>
 </head>

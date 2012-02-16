@@ -4,7 +4,7 @@
  *
  */
 Backbone.CartoD3 = function(cartodb) {
-    var Barchart = Backbone.View.extend({
+    var BarChart = Backbone.View.extend({
 		initialize: function(options){
 		    /*
 		     * TODO: SVG option and support
