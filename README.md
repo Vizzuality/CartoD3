@@ -1,58 +1,59 @@
-CartoD3
-================
+# CartoD3
 
-a library for creating D3 graphs from a Backbone.CartoDB model object
+A library for creating [D3](http://mbostock.github.com/d3) vizualizations from a [Backbone.CartoDB](https://github.com/Vizzuality/backbone.cartodb) model object.
 
-usage
------
+# Usage
 
-First you have to create a CartoDB instance linked to your account
+First you have to create a CartoDB instance linked to your account:
 
-	var CartoDB = Backbone.CartoDB({
-        user: 'examples', // you should put your account name here
-        table: 'earthquakes' // you should put your account name here
-    });
+```javascript
+var CartoDB = Backbone.CartoDB({
+    user: 'examples',
+    table: 'earthquakes' 
+});
+```
+
+Then you have to define a collection (see [backbone.cartodb](https://github.com/Vizzuality/backbone.cartodb) for other ways):
+
+```javascript
+var EarthQuakes = CartoDB.CartoDBCollection.extend({
+    sql: function () {
+        return "SELECT iso_a3, floor(gdp_md_est / 1000) as gdp_md_est, floor(pop_est / 1000000) as pop_est FROM country_population";
+    }
+});
+var eq = new EarthQuakes();
+```
+
+Next, create a new CartoD3 object and pass it your collection definition:
 
 
-Then you have to define a collection (see backbone.cartodb for other ways):
-
-	var EarthQuakes = CartoDB.CartoDBCollection.extend({
-		sql: function() {
-        	return "SELECT iso_a3,floor(gdp_md_est / 1000) as gdp_md_est, floor(pop_est / 1000000) as pop_est FROM country_population";
-    	}
-    });
-	var eq = new EarthQuakes();
+```javascript
+var CartoD3 = Backbone.CartoD3(eq);
+```
 	
-	
-Create a new CartoD3 object and pass it your collection definition:
-
-	var CartoD3 = Backbone.CartoD3(eq);
-	
-	
-Tell your CartoD3 what view of the cartodb model you would like to create, including what columns to use for major values (this will require document.ready):
-
-	var bubble = new CartoD3.Bubble({ el: $("#cartodb_d3"), variable: 'pop_est', label: 'iso_a3', fill: 'gdp_md_est'});
+Finally, tell your CartoD3 what view of the CartoDB model you would like to create, including what columns to use for major values (this will require document.ready):
 
 
-examples
---------
+```javascript
+var bubble = new CartoD3.Bubble({ el: $("#cartodb_d3"), variable: 'pop_est', label: 'iso_a3', fill: 'gdp_md_est'});
+```
 
-Take a look at examples folder
+# Examples
+
+Take a look at the [examples](https://github.com/Vizzuality/CartoD3/tree/master/examples) folder:
 
  - examples/barchart.html
  - examples/boxchart.html
  - examples/bubble.html
 
 
-requirements
-------------
+# Requirements
 
-The D3 library requires D3, Backbone, and backbone.cartodb.js
+CartoD3 requires [D3](http://mbostock.github.com/d3), [Backbone](http://documentcloud.github.com/backbone), and [Backbone.CartoDB](https://github.com/Vizzuality/backbone.cartodb).
 
-Each visualization type requires different D3 extensions see examples
+Each visualization type requires different D3 extensions, so take a look at the examples.
 
-next steps
-----------
+# Next steps
 
  - add dom_id parameter to each vis type. this will allow you to register a column (or function to create id) from your backbone.cartodb model as the id to dom for each chart element. then links can be created between the chart and the interactivity layer on a cartodb map
 
