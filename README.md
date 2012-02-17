@@ -39,9 +39,9 @@ var bubble = new CartoD3.Bubble({ el: $("#cartodb_d3"), variable: 'pop_est', lab
 
 Take a look at the [examples](https://github.com/Vizzuality/CartoD3/tree/master/examples) folder:
 
- - examples/barchart.html
- - examples/boxchart.html
- - examples/bubble.html
+ - [examples/barchart.html](http://vizzuality.github.com/CartoD3/examples/barchart.html)
+ - [examples/boxchart.html](http://vizzuality.github.com/CartoD3/examples/boxchart.html)
+ - [examples/bubble.html](http://vizzuality.github.com/CartoD3/examples/bubble.html)
 
 
 # Requirements
