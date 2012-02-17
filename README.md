@@ -7,10 +7,7 @@ A library for creating [D3](http://mbostock.github.com/d3) vizualizations from a
 First you have to create a CartoDB instance linked to your account:
 
 ```javascript
-var CartoDB = Backbone.CartoDB({
-    user: 'examples',
-    table: 'earthquakes' 
-});
+var CartoDB = Backbone.CartoDB({user: 'examples'});
 ```
 
 Then you have to define a collection (see [backbone.cartodb](https://github.com/Vizzuality/backbone.cartodb) for other ways):
