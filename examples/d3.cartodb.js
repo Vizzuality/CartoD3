@@ -13,7 +13,7 @@ Backbone.CartoD3 = function(cartodb) {
 			this.nticks = options.nticks || 10;
 			this.font_color = options.font_color || "#fff";
 			this.fill_color = options.fill_color || "#4682b4";
-			this.ypad = 10;
+			this.ypad = 20;
 			this.xpad = 5;
 			this.width = options.width || options.el.width() || 420;
 			
@@ -22,7 +22,18 @@ Backbone.CartoD3 = function(cartodb) {
             this.chart = d3.select(options.el[0]).append("svg")
               .attr("class", "CartoDB_D3 BarChart")
               .attr("width", this.width )
-              .append("g").attr("transform", "translate("+this.xpad+","+this.ypad+")");
+            if (this.options.title){
+                // -----------------------------
+                // Add Title then Legend
+                // -----------------------------
+                this.chart.append("text")
+                   .attr("x", this.width/4)
+                   .attr("y", 20)
+                   .style('font-size', 20)
+                   .text(this.options.title);
+                this.ypad = this.ypad + 30;
+            }
+            this.chart = this.chart.append("g").attr("transform", "translate("+this.xpad+","+this.ypad+")");
               
             this.labels = {};
             this.data = [];
@@ -96,6 +107,7 @@ Backbone.CartoD3 = function(cartodb) {
     			    .attr("y1", 0)
     			    .attr("y2", 120)
     			    .style("stroke", "#000");
+    			    
             });
 		}
     });
@@ -106,18 +118,30 @@ Backbone.CartoD3 = function(cartodb) {
             cartodb.fetch();
 			this.width = width-8; //accounts for padding+margin
 			this.height = height-8;
+			this.ypad = 0;
 			this.data = [];
 			this.labels = {};
             this.format = d3.format(",d");
             this.fill = d3.scale.category20c();
             this.bubble = d3.layout.pack()
                             .sort(null)
-                            .size([width, height]);
+                            .size([this.width, this.height]);
             this.vis = d3.select(options.el[0]).append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .attr("class", "CartoDB_D3 Bubble");
+            if (this.options.title){
+                // -----------------------------
+                // Add Title then Legend
+                // -----------------------------
+                this.vis.append("text")
+                   .attr("x", this.width/4)
+                   .attr("y", 20)
+                   .style('font-size', 20)
+                   .text(this.options.title);
+                   this.vis.attr("transform", "translate(0,30)");
 
+            }
             this.render();
 
 		},
@@ -183,7 +207,22 @@ Backbone.CartoD3 = function(cartodb) {
             }
                             
             this.vis = d3.select(options.el[0])
+                .attr("width", width)
+                .attr("height", height)
                 .attr("class", "CartoDB_D3 BoxChart");
+            if (this.options.title){
+                // -----------------------------
+                // Add Title then Legend
+                // -----------------------------
+                this.vis.append('div')
+                   .attr('width', this.width)
+                   .attr('height', 40)
+                       .append("text")
+                       .attr("x", this.width/4)
+                       .attr("y", 20)
+                       .style('font-size', 20)
+                       .text(this.options.title);
+            }
 
             this.boxchart = d3.chart.box()
                             .whiskers(this.irq(1.5))
