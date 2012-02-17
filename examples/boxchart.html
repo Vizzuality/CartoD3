@@ -22,10 +22,7 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	}
   </style>
   <script type="text/javascript">
-	var CartoDB = Backbone.CartoDB({
-        user: 'viz2', // you should put your account name here
-        table: 'brooklyntree' // you should put your account name here
-    });
+	var CartoDB = Backbone.CartoDB({user: 'viz2'});
 	var Trees = CartoDB.CartoDBCollection.extend({
 		sql: function() {
         	return "SELECT borough,species,ln(sum(diameter)) as diameter FROM brooklyntree group by borough,species ORDER BY borough"

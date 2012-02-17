@@ -21,10 +21,7 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	}
   </style>
   <script type="text/javascript">
-	var CartoDB = Backbone.CartoDB({
-        user: 'examples', // you should put your account name here
-        table: 'un_population_projections' // you should put your account name here
-    });
+	var CartoDB = Backbone.CartoDB({user: 'examples'});
 	var Populations = CartoDB.CartoDBCollection.extend({
 		sql: function() {
         	return "SELECT country_or_area as country,year_n as year,floor(value) as population  FROM un_population_projections where variant = 'Medium variant' AND country_or_area in ('United States of America', 'China', 'Brazil') AND country_or_area = 'China' ORDER BY country_or_area, year_n";

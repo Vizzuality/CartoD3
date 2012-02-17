@@ -21,10 +21,7 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	}
   </style>
   <script type="text/javascript">
-	var CartoDB = Backbone.CartoDB({
-        user: 'examples', // you should put your account name here
-        table: 'earthquakes' // you should put your account name here
-    });
+	var CartoDB = Backbone.CartoDB({user: 'examples'});
 	var EarthQuakes = CartoDB.CartoDBCollection.extend({
 		sql: function() {
         	return "select month,avg(magnitude) as magnitude from earthquakes group by month order by month asc";
