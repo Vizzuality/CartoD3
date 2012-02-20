@@ -358,18 +358,18 @@ Backbone.CartoD3 = function(cartodb) {
                 //  }
                  
                  maxval = (1 + Math.floor(maxval / 10)) * 10;   
-
-                 console.log(that.data)
+                 
                var  w = 815,
                     h = 500,
-                    p = 80;
+                    yp = 10,
+                    xp = 80;
                 that.vis = d3.select(that.options.el[0])
                     .data([that.data['Brazil']])
                      .append("svg:svg")
-                       .attr("width", w + p * 2)
-                       .attr("height", h + p * 2)
+                       .attr("width", w + xp )
+                       .attr("height", h + yp )
                      .append("svg:g")
-                       .attr("transform", "translate(" + p + "," + p + ")");
+                       .attr("transform", "translate(" + xp + "," + yp + ")");
                 x = d3.scale.linear().domain([minind,maxind]).range([0, w]),
                 y = d3.scale.linear().domain([minval,maxval]).range([h, 0]);
 
@@ -432,55 +432,45 @@ Backbone.CartoD3 = function(cartodb) {
                 
                 }
                 
-                
-               // // Series II
-               // that.vis.append("svg:path")
-               //     .attr("class", "line")
-               //     .attr("fill", "none")
-               //     .attr("stroke", "darkblue")
-               //     .attr("stroke-width", 2)
-               //     .attr("d", d3.svg.line()
-               //       .x(function(d) { return x(d.x); })
-               //       .y(function(d) { return y(d.z); }));
-               
-               // that.vis.select("circle.line")
-               //     .data(val_array1)
-               //   .enter().append("svg:circle")
-               //     .attr("class", "line")
-               //     .attr("fill", "darkblue" )
-               //     .attr("cx", function(d) { return x(d.x); })
-               //     .attr("cy", function(d) { return y(d.z); })
-               //     .attr("r", 1);
-
                // -----------------------------
                // Add Title then Legend
                // -----------------------------
-               // that.vis.append("svg:text")
-               //     .attr("x", w/4)
-               //     .attr("y", 20)
-               //     .text(that.options.title);
-               // 
+               if (that.options.title){
+                   that.vis.append("svg:text")
+                       .attr("x", w - w/4 - 50)
+                       .attr("y", 20 - yp)
+                       .text(that.options.title);
+               }
+               if (that.options.subtitle){
+                   that.vis.append("svg:text")
+                       .attr("x", w - w/4)
+                       .attr("y", 42 - yp)
+                       .text(that.options.subtitle);
+               }
+               var yoff = 0;
+               for (var group in that.data) {
+                   that.vis.append("svg:rect")
+                       .attr("x", w/10 - 20)
+                       .attr("y", 50 + yoff)
+                       .attr("stroke", strokes[group])
+                       .attr("height", 2)
+                       .attr("width", 40);
+               
+                   that.vis.append("svg:text")
+                       .attr("x", 30 + w/10)
+                       .attr("y", 55 + yoff)
+                       .text(that.data[group][0][that.options.label]);
+                   yoff = yoff+30;
+               }
                // that.vis.append("svg:rect")
-               //     .attr("x", w/2 - 20)
-               //     .attr("y", 50)
-               //     .attr("stroke", "darkblue")
-               //     .attr("height", 2)
-               //     .attr("width", 40);
-               // 
-               // that.vis.append("svg:text")
-               //     .attr("x", 30 + w/2)
-               //     .attr("y", 55)
-               //     .text("China");
-               // 
-               // that.vis.append("svg:rect")
-               //     .attr("x", w/2 - 20)
+               //     .attr("x", w/10 - 20)
                //     .attr("y", 80)
                //     .attr("stroke", "maroon")
                //     .attr("height", 2)
                //     .attr("width", 40);
                // 
                // that.vis.append("svg:text")
-               //     .attr("x", 30 + w/2)
+               //     .attr("x", 30 + w/10)
                //     .attr("y", 85)
                //     .text("United States");
 

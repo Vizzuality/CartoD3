@@ -31,7 +31,7 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	
 	var CartoD3 = Backbone.CartoD3(pops);
 	$(document).ready(function() {
-		var barchart = new CartoD3.LineChart({ el: $("#cartodb_d3"), group: 'country', variable: 'population', independent: 'year', label: 'country', title: "Population Growth Estimates: US, China, Brazil"});
+		var barchart = new CartoD3.LineChart({ el: $("#cartodb_d3"), group: 'country', variable: 'population', independent: 'year', label: 'country', title: "Population Growth Estimates", subtitle: "US, China, Brazil"});
  	});
   </script>
 </head>
