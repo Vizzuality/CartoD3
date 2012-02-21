@@ -292,7 +292,7 @@ Backbone.CartoD3 = function(cartodb) {
 		    // this.nticks = options.nticks || 10;
 			this.font_color = options.font_color || "#fff";
 			this.fill_color = options.fill_color || "#4682b4";
-			this.colorlist = ["maroon", "darkblue"];
+			this.stroke_defaults = ['darkblue', 'maroon','black', 'orange', 'purple', 'green','red', 'yellow', 'darkblue', 'maroon','green'];
 			
 			this.labelpad = 100;
 			this.width = options.width || options.el.width() || 420;
@@ -323,11 +323,11 @@ Backbone.CartoD3 = function(cartodb) {
                 var label_array = new Array(),
                     val_array1 = new Array();
                 
-                var stroke_defaults = [, 'darkblue', 'maroon','black', 'orange', 'purple', 'green','red', 'yellow', 'darkblue', 'maroon','black'];
+                
                 this.each(function(p) {
                     var g = that.data[p.get(that.options.group)] || [];
                     var a = {};
-                    strokes[p.get(that.options.group)] = strokes[p.get(that.options.group)] || stroke_defaults.pop();
+                    strokes[p.get(that.options.group)] = strokes[p.get(that.options.group)] || that.stroke_defaults.pop();
                     //console.log(a)
                     a[that.options.group] = a[that.options.group] || p.get(that.options.group);
                     a[that.options.independent] = a[that.options.independent] || p.get(that.options.independent);
@@ -346,16 +346,6 @@ Backbone.CartoD3 = function(cartodb) {
                 for (var i in that.data) {
                     sampsize = Math.max(sampsize, that.data[i].length);
                 }
-                //that.data = [23, 85, 67, 38, 70, 30, 80, 18 ];
-
-                /* Read CSV file: first row =>  year,top1,top5  */
-
-                // 
-                // for (var i=0; i < sampsize; i++) {
-                //    label_array[i] = parseInt(that.data[i][that.options.independent]);
-                //    val_array1[i] = { x: label_array[i], y: parseFloat(data1[i][that.options.variable]), z: parseFloat(data1[i][that.options.variable]) };
-                //    maxval = Math.max(maxval, parseFloat(data1[i][that.options.variable]), parseFloat(data1[i][that.options.variable]) );
-                //  }
                  
                  maxval = (1 + Math.floor(maxval / 10)) * 10;   
                  
@@ -462,18 +452,6 @@ Backbone.CartoD3 = function(cartodb) {
                        .text(that.data[group][0][that.options.label]);
                    yoff = yoff+30;
                }
-               // that.vis.append("svg:rect")
-               //     .attr("x", w/10 - 20)
-               //     .attr("y", 80)
-               //     .attr("stroke", "maroon")
-               //     .attr("height", 2)
-               //     .attr("width", 40);
-               // 
-               // that.vis.append("svg:text")
-               //     .attr("x", 30 + w/10)
-               //     .attr("y", 85)
-               //     .text("United States");
-
 
             });
             
