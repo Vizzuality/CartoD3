@@ -306,7 +306,7 @@ Backbone.CartoD3 = function(cartodb) {
             this.vis;
 
             this.labels = {};
-            this.data = [];
+            this.data = {};
         
             this.render();
 		},
@@ -314,51 +314,65 @@ Backbone.CartoD3 = function(cartodb) {
 		    var that = this;
 			cartodb.bind('reset',function(){
 			    var x, y
-                    sampsize = 0;
+                    sampsize = 0,
+                    maxval = -Infinity,
+                    maxind = -Infinity,
+                    minval = Infinity,
+                    minind = Infinity,
+                    strokes = {};
                 var label_array = new Array(),
                     val_array1 = new Array();
-                var maxval = 0;
                 
+                var stroke_defaults = [, 'darkblue', 'maroon','black', 'orange', 'purple', 'green','red', 'yellow', 'darkblue', 'maroon','black'];
                 this.each(function(p) {
+                    var g = that.data[p.get(that.options.group)] || [];
                     var a = {};
-                    
+                    strokes[p.get(that.options.group)] = strokes[p.get(that.options.group)] || stroke_defaults.pop();
+                    //console.log(a)
                     a[that.options.group] = a[that.options.group] || p.get(that.options.group);
                     a[that.options.independent] = a[that.options.independent] || p.get(that.options.independent);
                     a[that.options.variable] = a[that.options.variable] || p.get(that.options.variable);
                     a[that.options.label] = a[that.options.label] || p.get(that.options.label);
                     
+                    g.push(a);
                     
-                    that.data.push(a);
+                    that.data[p.get(that.options.group)] = g;
+                    
+                    minval = Math.min(a[that.options.variable],minval);
+                    minind = Math.min(a[that.options.independent],minind);
+                    maxval = Math.max(a[that.options.variable],maxval);
+                    maxind = Math.max(a[that.options.independent],maxind);
                 });
-                var data1 = that.data;
+                for (var i in that.data) {
+                    sampsize = Math.max(sampsize, that.data[i].length);
+                }
                 //that.data = [23, 85, 67, 38, 70, 30, 80, 18 ];
 
                 /* Read CSV file: first row =>  year,top1,top5  */
 
-                sampsize = that.data.length;
-
-                for (var i=0; i < sampsize; i++) {
-                   label_array[i] = parseInt(that.data[i][that.options.independent]);
-                   val_array1[i] = { x: label_array[i], y: parseFloat(data1[i][that.options.variable]), z: parseFloat(data1[i][that.options.variable]) };
-                   maxval = Math.max(maxval, parseFloat(data1[i][that.options.variable]), parseFloat(data1[i][that.options.variable]) );
-                 }
+                // 
+                // for (var i=0; i < sampsize; i++) {
+                //    label_array[i] = parseInt(that.data[i][that.options.independent]);
+                //    val_array1[i] = { x: label_array[i], y: parseFloat(data1[i][that.options.variable]), z: parseFloat(data1[i][that.options.variable]) };
+                //    maxval = Math.max(maxval, parseFloat(data1[i][that.options.variable]), parseFloat(data1[i][that.options.variable]) );
+                //  }
+                 
                  maxval = (1 + Math.floor(maxval / 10)) * 10;   
-
-
+                 
                var  w = 815,
                     h = 500,
-                    p = 30,
-                    x = d3.scale.linear().domain([ label_array[0], label_array[sampsize-1] ]).range([0, w]),
-                    y = d3.scale.linear().domain([0, maxval]).range([h, 0]);
-
+                    yp = 10,
+                    xp = 80;
                 that.vis = d3.select(that.options.el[0])
-                    .data([val_array1])
+                    .data([that.data['Brazil']])
                      .append("svg:svg")
-                       .attr("width", w + p * 2)
-                       .attr("height", h + p * 2)
+                       .attr("width", w + xp )
+                       .attr("height", h + yp )
                      .append("svg:g")
-                       .attr("transform", "translate(" + p + "," + p + ")");
-                   
+                       .attr("transform", "translate(" + xp + "," + yp + ")");
+                x = d3.scale.linear().domain([minind,maxind]).range([0, w]),
+                y = d3.scale.linear().domain([minval,maxval]).range([h, 0]);
+
                var rules = that.vis.selectAll("g.rule")
                   .data(x.ticks(15))
                  .enter().append("svg:g")
@@ -395,77 +409,70 @@ Backbone.CartoD3 = function(cartodb) {
                 .attr("dy", ".35em")
                 .attr("text-anchor", "end")
                 .text(y.tickFormat(5));
-
-
-               // Series I
-               that.vis.append("svg:path")
-                   .attr("class", "line")
-                   .attr("fill", "none")
-                   .attr("stroke", "maroon")
-                   .attr("stroke-width", 2)
-                   .attr("d", d3.svg.line()
-                     .x(function(d) { return x(d.x); })
-                     .y(function(d) { return y(d.y); }));
-
-               that.vis.selectAll("circle.line")
-                   .data(val_array1)
-                 .enter().append("svg:circle")
-                   .attr("class", "line")
-                   .attr("fill", "maroon" )
-                   .attr("cx", function(d) { return x(d.x); })
-                   .attr("cy", function(d) { return y(d.y); })
-                   .attr("r", 1);
-
-               // Series II
-               that.vis.append("svg:path")
-                   .attr("class", "line")
-                   .attr("fill", "none")
-                   .attr("stroke", "darkblue")
-                   .attr("stroke-width", 2)
-                   .attr("d", d3.svg.line()
-                     .x(function(d) { return x(d.x); })
-                     .y(function(d) { return y(d.z); }));
-               
-               // that.vis.select("circle.line")
-               //     .data(val_array1)
-               //   .enter().append("svg:circle")
-               //     .attr("class", "line")
-               //     .attr("fill", "darkblue" )
-               //     .attr("cx", function(d) { return x(d.x); })
-               //     .attr("cy", function(d) { return y(d.z); })
-               //     .attr("r", 1);
-
+                
+                for (var group in that.data) {
+                   var line = d3.svg.line()
+                         .x(function(d) { return x(d[that.options.independent]) })
+                         .y(function(d) { return y(d[that.options.variable]) });
+                   that.vis.selectAll("circle."+group+"-line")
+                       .data(that.data[group])
+                     .enter().append("svg:circle")
+                       .attr("class", group+"-line")
+                       .attr("fill",strokes[group])
+                       .attr("cx", function(d) { return x(d[that.options.independent]) })
+                       .attr("cy", function(d) { return y(d[that.options.variable]) })
+                       .attr("r", 1);
+                   // Series I
+                   that.vis.append("svg:path")
+                       .attr("class", group+"-path")
+                       .attr("fill", "none")
+                       .attr("stroke", strokes[group])
+                       .attr("stroke-width", 3)
+                       .attr("d", line(that.data[group]));
+                
+                }
+                
                // -----------------------------
                // Add Title then Legend
                // -----------------------------
-               that.vis.append("svg:text")
-                   .attr("x", w/4)
-                   .attr("y", 20)
-                   .text(that.options.title);
-
-               that.vis.append("svg:rect")
-                   .attr("x", w/2 - 20)
-                   .attr("y", 50)
-                   .attr("stroke", "darkblue")
-                   .attr("height", 2)
-                   .attr("width", 40);
-
-               that.vis.append("svg:text")
-                   .attr("x", 30 + w/2)
-                   .attr("y", 55)
-                   .text("China");
-
-               that.vis.append("svg:rect")
-                   .attr("x", w/2 - 20)
-                   .attr("y", 80)
-                   .attr("stroke", "maroon")
-                   .attr("height", 2)
-                   .attr("width", 40);
-
-               that.vis.append("svg:text")
-                   .attr("x", 30 + w/2)
-                   .attr("y", 85)
-                   .text("United States");
+               if (that.options.title){
+                   that.vis.append("svg:text")
+                       .attr("x", w - w/4 - 50)
+                       .attr("y", 20 - yp)
+                       .text(that.options.title);
+               }
+               if (that.options.subtitle){
+                   that.vis.append("svg:text")
+                       .attr("x", w - w/4)
+                       .attr("y", 42 - yp)
+                       .text(that.options.subtitle);
+               }
+               var yoff = 0;
+               for (var group in that.data) {
+                   that.vis.append("svg:rect")
+                       .attr("x", w/10 - 20)
+                       .attr("y", 50 + yoff)
+                       .attr("stroke", strokes[group])
+                       .attr("height", 2)
+                       .attr("width", 40);
+               
+                   that.vis.append("svg:text")
+                       .attr("x", 30 + w/10)
+                       .attr("y", 55 + yoff)
+                       .text(that.data[group][0][that.options.label]);
+                   yoff = yoff+30;
+               }
+               // that.vis.append("svg:rect")
+               //     .attr("x", w/10 - 20)
+               //     .attr("y", 80)
+               //     .attr("stroke", "maroon")
+               //     .attr("height", 2)
+               //     .attr("width", 40);
+               // 
+               // that.vis.append("svg:text")
+               //     .attr("x", 30 + w/10)
+               //     .attr("y", 85)
+               //     .text("United States");
 
 
             });
