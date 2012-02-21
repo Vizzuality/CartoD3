@@ -23,7 +23,6 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
   </style>
   <script type="text/javascript">
 	var CartoDB = Backbone.CartoDB({user: 'viz2'});
-
 	var Trees = CartoDB.CartoDBCollection.extend({
 		sql: function() {
         	return "SELECT borough,species,ln(sum(diameter)) as diameter FROM brooklyntree group by borough,species ORDER BY borough"
@@ -33,8 +32,8 @@ Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	
 	var CartoD3 = Backbone.CartoD3(trees);
 	$(document).ready(function() {
-		var boxplot = new CartoD3.BoxPlot({ el: $("#cartodb_d3"), group: 'borough', independent: 'species', variable: 'diameter', label: 'diameter', title: 'Tree Species Avg Diameter by NY Borough'});
- 	})
+		var boxplot = new CartoD3.BoxPlot({ el: $("#cartodb_d3"), group: 'borough', independent: 'species', variable: 'diameter', label: 'diameter', title: 'Tree Species Diameter by NY Borough'});
+ 	});
   </script>
 </head>
 <body style="font-family: Arial;border: 0 none;">
