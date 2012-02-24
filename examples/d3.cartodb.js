@@ -286,14 +286,25 @@ Backbone.CartoD3 = function(cartodb) {
     var LineChart = Backbone.View.extend({
 		initialize: function(options){
 		    /*
+		     * options = {
+		     *            font_color: "#fff",
+		     *            strokes: ['darkblue'],
+		     *            stroke_width: 2,
+		     *            legend: false,
+		     *            borders: true,
+		     *            legend_terms: null // {result_value: string,}
+		     *           }
 		     * TODO: SVG option and support
 		     */
 		    // this.bar_height = options.bar_height || 20;
 		    // this.nticks = options.nticks || 10;
 			this.font_color = options.font_color || "#fff";
-			this.fill_color = options.fill_color || "#4682b4";
-			this.stroke_defaults = ['darkblue', 'maroon','black', 'orange', 'purple', 'green','red', 'yellow', 'darkblue', 'maroon','green'];
-			
+			this.fill_color = options.line_color || "#4682b4";
+			this.sw = options.stroke_width || 2;
+			this.stroke_defaults = options.strokes || ['darkblue', 'maroon','black', 'orange', 'purple', 'green','red', 'yellow', 'darkblue', 'maroon','green'];
+			this.legend = options.legend || false; 
+			this.borders = options.borders=true ? true : false; 
+			               
 			this.labelpad = 100;
 			this.width = options.width || options.el.width() || 420;
 			this.height = options.height || options.el.height() || 420;
@@ -351,7 +362,7 @@ Backbone.CartoD3 = function(cartodb) {
                  
                var  w = 815,
                     h = 500,
-                    yp = 10,
+                    yp = 40,
                     xp = 80;
                 that.vis = d3.select(that.options.el[0])
                     .data([that.data['Brazil']])
@@ -374,31 +385,6 @@ Backbone.CartoD3 = function(cartodb) {
                 .attr("x2", x)
                 .attr("y1", 0)
                 .attr("y2", h - 1);
-
-               rules.append("svg:line")
-                .attr("class", function(d) { return d ? null : "axis"; })
-                .data(y.ticks(10))
-                .attr("y1", y)
-                .attr("y2", y)
-                .attr("x1", 0)
-                .attr("x2", w - 10);
-
-               // Place axis tick labels
-               rules.append("svg:text")
-                .attr("x", x)
-                .attr("y", h + 15)
-                .attr("dy", ".71em")
-                .attr("text-anchor", "middle")
-                .text(x.tickFormat(10))
-                .text(String);
-
-               rules.append("svg:text")
-                .data(y.ticks(12))
-                .attr("y", y)
-                .attr("x", -10)
-                .attr("dy", ".35em")
-                .attr("text-anchor", "end")
-                .text(y.tickFormat(5));
                 
                 for (var group in that.data) {
                    var line = d3.svg.line()
@@ -411,13 +397,13 @@ Backbone.CartoD3 = function(cartodb) {
                        .attr("fill",strokes[group])
                        .attr("cx", function(d) { return x(d[that.options.independent]) })
                        .attr("cy", function(d) { return y(d[that.options.variable]) })
-                       .attr("r", 1);
+                       .attr("r", that.sw/2);
                    // Series I
                    that.vis.append("svg:path")
                        .attr("class", group+"-path")
                        .attr("fill", "none")
                        .attr("stroke", strokes[group])
-                       .attr("stroke-width", 3)
+                       .attr("stroke-width", that.sw)
                        .attr("d", line(that.data[group]));
                 
                 }
@@ -437,22 +423,69 @@ Backbone.CartoD3 = function(cartodb) {
                        .attr("y", 42 - yp)
                        .text(that.options.subtitle);
                }
-               var yoff = 0;
-               for (var group in that.data) {
-                   that.vis.append("svg:rect")
-                       .attr("x", w/10 - 20)
-                       .attr("y", 50 + yoff)
-                       .attr("stroke", strokes[group])
-                       .attr("height", 2)
-                       .attr("width", 40);
+               if (that.options.legend){
+                   var yoff = 0;
+                   for (var group in that.data) {
+                       that.vis.append("svg:rect")
+                           .attr("x", w/10 - 20)
+                           .attr("y", 50 + yoff)
+                           .attr("stroke", strokes[group])
+                           .attr("height", 2)
+                           .attr("width", 40);
                
-                   that.vis.append("svg:text")
-                       .attr("x", 30 + w/10)
-                       .attr("y", 55 + yoff)
-                       .text(that.data[group][0][that.options.label]);
-                   yoff = yoff+30;
-               }
+                       that.vis.append("svg:text")
+                           .attr("x", 30 + w/10)
+                           .attr("y", 55 + yoff)
+                           .text(function(){
+                               if (that.data_key){
+                                   return that.data_key[that.data[group][0][that.options.label]] || that.data[group][0][that.options.label];
+                               }else{
+                                   return that.data[group][0][that.options.label]
+                               }
+                            });
+                       yoff = yoff+30;
+                   }
+                }
+                
+               // -----------------------------
+               // Add Borders and ticks
+               // -----------------------------
+               
+               // y ticks
+               rules.append("svg:line")
+                .attr("class", function(d) { return d ? null : "axis"; })
+                .data(y.ticks(10))
+                .attr("y1", y)
+                .attr("y2", y)
+                .attr("x1", 0)
+                .attr("x2", w - 10);
 
+               rules.append("svg:text")
+                .data(y.ticks(12))
+                .attr("y", y)
+                .attr("x", -10)
+                .attr("dy", ".35em")
+                .attr("text-anchor", "end")
+                .text(y.tickFormat(5));
+                
+               // x ticks
+               // rules.append("svg:text")
+               //  .attr("x", x)
+               //  .attr("y",  70)
+               //  .attr("dy", ".71em")
+               //  .attr("text-anchor", "middle")
+               //  .text(
+               //      x.tickFormat(10)
+               //  )
+               //  .text(String);
+                
+                if (that.options.borders){
+        			that.vis.append("svg:line")
+                        .attr("x", w/10 - 20)
+        			    .attr("y1", 0)
+        			    .attr("y2", h)
+        			    .style("stroke", "#000");
+    			}
             });
             
 		}
