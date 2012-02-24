@@ -1,0 +1,42 @@
+<!--
+You are free to copy and use this sample in accordance with the terms of the
+Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>D3 Visualization API Sample</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script type="text/javascript" src="libs/underscore-1.1.6.js"></script>
+  <script type="text/javascript" src="libs/backbone.js"></script>
+  <script type="text/javascript" src="libs/d3.min.js"></script>
+  <script type="text/javascript" src="backbone.cartodb.js"></script>
+  <script type="text/javascript" src="d3.cartodb.js"></script>
+  <link href='css/cartodb.d3.default.css' rel='stylesheet' type='text/css' />
+  <style type="text/css">
+	#cartodb_d3 {
+		float: left; width: 800px;
+	}
+  </style>
+  <script type="text/javascript">
+	var CartoDB = Backbone.CartoDB({user: 'viz2'});
+	var Populations = CartoDB.CartoDBCollection.extend({
+		sql: function() {
+        	//return "SELECT country_or_area as country,year_n as year,floor(value) as population  FROM un_population_projections where variant = 'Medium variant' AND country_or_area in ('United States of America', 'China', 'Brazil') ORDER BY country_or_area, year_n";
+			return "SELECT EXTRACT(EPOCH FROM to_date(lpad(datestop,8,'0'), 'MMDDYYYY')) as datereal, race, count(*) as ct FROM stop_frisk_saleiva group by datestop, race ORDER BY to_date(lpad(datestop,8,'0'), 'MMDDYYYY')";
+    	}
+    });
+	var pops = new Populations();
+	
+	var CartoD3 = Backbone.CartoD3(pops);
+	$(document).ready(function() {
+		var barchart = new CartoD3.LineChart({ el: $("#cartodb_d3"), group: 'race', variable: 'ct', independent: 'datereal', label: 'race', stroke_width: 1, legend: false, legend_terms: null, borders: true});
+ 	});
+  </script>
+</head>
+<body style="font-family: Arial;border: 0 none;">
+<div id="cartodb_d3"></div>
+</body>
+</html>
